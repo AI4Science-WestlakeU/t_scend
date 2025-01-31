@@ -1,0 +1,9 @@
+# dataset
+dataset/
+
+# log
+results
+test
+docs/
+wandb/
+X_src.egg-info/
