@@ -1,7 +1,7 @@
 #activate the conda environment
 # echo "Start running the script"
-source /opt/conda/bin/activate
-conda activate tscendEnv
+# source /opt/conda/bin/activate
+# conda activate tscendEnv
 export CUDA_VISIBLE_DEVICES=0
 
 filename="results/checkpoint/Maze/Original/model-9.pt"
