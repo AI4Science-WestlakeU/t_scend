@@ -1,12 +1,3 @@
-# import debugpy
-try:
-    # 5678 is the default attach port in the VS Code debug configurations. Unless a host and port are specified, host defaults to 127.0.0.1
-    debugpy.listen(("localhost", 9501))
-    print("Waiting for debugger attach")
-    debugpy.wait_for_client()
-except Exception as e:
-    pass
-
 import os
 import os.path as osp
 import time
@@ -15,20 +6,17 @@ os.environ['OPENBLAS_NUM_THREADS'] = '1'
 os.environ['NUMEXPR_NUM_THREADS'] = '1'
 os.environ['MKL_NUM_THREADS'] = '1'
 
-from X_src.model.diffusion_lib.denoising_diffusion_pytorch_1d import GaussianDiffusion1D, Trainer1D
-from X_src.model.models import EBM, DiffusionWrapper
-from X_src.model.models import SudokuEBM, SudokuTransformerEBM, SudokuDenoise, SudokuLatentEBM, AutoencodeModel,MazeDenoise
-from X_src.model.models import GraphEBM, GraphReverse, GNNConvEBM, GNNDiffusionWrapper, GNNConvDiffusionWrapper, GNNConv1DEBMV2, GNNConv1DV2DiffusionWrapper, GNNConv1DReverse ,MazeEBM
-from X_src.data.sat_dataset import SATNetDataset, SudokuDataset, SudokuRRNDataset, SudokuRRNLatentDataset
-from X_src.data.data_maze import MazeData,reconstruct_maze_solved,calculate_path_conformity,calculate_path_continuity,maze_accuracy,normalize_last_dim
-
+from tscend_src.model.diffusion_lib.denoising_diffusion_pytorch_1d import GaussianDiffusion1D, Trainer1D
+from tscend_src.model.models import EBM, DiffusionWrapper
+from tscend_src.model.models import SudokuEBM, SudokuTransformerEBM, SudokuDenoise, SudokuLatentEBM, AutoencodeModel
+from tscend_src.data.sat_dataset import SATNetDataset, SudokuDataset, SudokuRRNDataset, SudokuRRNLatentDataset
 import torch
 import numpy as np
 import argparse
 import hashlib
 
-from X_src.utils.utils import set_seed
-from X_src.filepath import EXP_PATH,SRC_PATH
+from tscend_src.utils.utils import set_seed
+from tscend_src.filepath import EXP_PATH,SRC_PATH
 import torch.multiprocessing as mp
 
 # mp.set_start_method('spawn', force=True)
@@ -53,7 +41,7 @@ def str2bool(x):
 parser = argparse.ArgumentParser(description='Train Diffusion Reasoning Model')
 parser.add_argument('--dataset', default='inverse', type=str, help='dataset to evaluate')
 parser.add_argument('--inspect-dataset', action='store_true', help='run an IPython embed interface after loading the dataset')
-parser.add_argument('--model', default='mlp', type=str, choices=['mlp', 'mlp-reverse', 'sudoku', 'sudoku-latent', 'sudoku-transformer', 'sudoku-reverse', 'gnn', 'gnn-reverse', 'gnn-conv', 'gnn-conv-1d', 'gnn-conv-1d-v2', 'gnn-conv-1d-v2-reverse','maze-EBM','maze-denoise'], help='model to use')
+parser.add_argument('--model', default='mlp', type=str, choices=['mlp', 'mlp-reverse', 'sudoku', 'sudoku-latent', 'sudoku-transformer', 'sudoku-reverse', 'gnn', 'gnn-reverse', 'gnn-conv', 'gnn-conv-1d', 'gnn-conv-1d-v2', 'gnn-conv-1d-v2-reverse'])
 parser.add_argument('--ckpt', type=str, default=None, help='directory to load model and save results')
 parser.add_argument('--batch_size', default=2048, type=int, help='size of batch of input to use')
 parser.add_argument('--diffusion_steps', default=10, type=int, help='number of diffusion time steps (default: 10)')
@@ -70,10 +58,7 @@ parser.add_argument('--baseline', action='store_true', default=False)
 parser.add_argument('--data_workers', type=int, default=4)
 parser.add_argument('--seed', type=int, default=42)
 parser.add_argument('--n_seed', type=int, default=1)
-parser.add_argument('--train_data_path', type=str, default=None)
-parser.add_argument('--val_data_path', type=str, default=None)
-parser.add_argument('--test_data_path', type=str, default=None)
-parser.add_argument('--maze_grid_size', type=int, default=4)
+
 # MCTS config
 parser.add_argument('--inference_method', type=str, default='mcts', choices=['mcts', 'diffusion_baseline','naive_diffusion','mixed_inference'])
 parser.add_argument('--mcts_start_step', type=int, default=0, help='start step for mcts')
@@ -108,27 +93,24 @@ parser.add_argument('--test_condition_generalization',type=str2bool,default =Fal
 parser.add_argument('--plt_energy_landscape_permutation_noised',type=str2bool,default =False)
 
 
-
 if __name__ == "__main__":
     FLAGS = parser.parse_args()
     set_seed(FLAGS.seed)
     FLAGS.datetime = time.strftime('%Y-%m-%d-%H-%M-%S')
-    print(vars(FLAGS))
     # if FLAGS.ckpt file path , get the directory path
     args_dict = vars(FLAGS)
     sorted_args = {k: args_dict[k] for k in sorted(args_dict)}
     data_to_hash = str(sorted_args)
     hash_value = hashlib.sha256(data_to_hash.encode()).hexdigest()[:8] # TODO only use the first 8 characters
     if osp.isfile(FLAGS.ckpt):
-        FLAGS.results_path = osp.dirname(FLAGS.ckpt)+f'/_maze_grid_size_{FLAGS.maze_grid_size}'  
+        FLAGS.results_path = osp.dirname(FLAGS.ckpt)
     else:
-        FLAGS.results_path = EXP_PATH + '/results/' + f'ds_{FLAGS.dataset}' + '/' + FLAGS.ckpt + '/'+str(hash_value) +f'_maze_grid_size_{FLAGS.maze_grid_size}'  
+        FLAGS.results_path = EXP_PATH + '/results/' + f'ds_{FLAGS.dataset}' + '/' + FLAGS.ckpt + '/'+str(hash_value)
     validation_dataset = None
     extra_validation_datasets = dict()
     extra_validation_every_mul = 10
     save_and_sample_every = 1000
     validation_batch_size = 256
-
     if FLAGS.dataset == 'sudoku':
         train_dataset = SudokuDataset(FLAGS.dataset, split='train')
         validation_dataset = SudokuDataset(FLAGS.dataset, split='val')
@@ -150,34 +132,6 @@ if __name__ == "__main__":
         save_and_sample_every = 10000
         dataset = train_dataset
         metric = 'sudoku_latent'
-    elif FLAGS.dataset == 'maze':
-        num_train_datapoint = eval(FLAGS.train_data_path.split('N-')[1])
-        num_val_datapoint = eval(FLAGS.val_data_path.split('N-')[1])
-        num_test_datapoint = eval(FLAGS.test_data_path.split('N-')[1])
-        train_dataset = MazeData(
-                        dataset_name="Maze",
-                        dataset_path=FLAGS.train_data_path,
-                        mode = 'train',# 'test'
-                        num_datapoints = num_train_datapoint
-                        )
-        validation_dataset = MazeData(
-                        dataset_name="Maze",
-                        dataset_path=FLAGS.val_data_path,
-                        mode = 'val',# 'test'
-                        num_datapoints = num_val_datapoint
-                        )
-        extra_validation_datasets = {
-            'maze-test': MazeData(
-                        dataset_name="Maze",
-                        dataset_path=FLAGS.test_data_path,
-                        mode = 'test',
-                        num_datapoints = num_test_datapoint
-                        )
-        }
-        dataset = train_dataset
-        metric = 'maze'
-        validation_batch_size =128
-        assert FLAGS.cond_mask
     else:
         assert False
 
@@ -185,26 +139,27 @@ if __name__ == "__main__":
         from IPython import embed
         embed()
         exit()
-
     if FLAGS.model == 'sudoku':
         model = SudokuEBM(
             inp_dim = dataset.inp_dim,
             out_dim = dataset.out_dim,
         )
         model = DiffusionWrapper(model)
-    elif FLAGS.model == 'maze-EBM':
-        model = MazeEBM(
+    elif FLAGS.model == 'sudoku-latent':
+        model = SudokuLatentEBM(
+            inp_dim = dataset.inp_dim,
+            out_dim = dataset.out_dim,
         )
         model = DiffusionWrapper(model)
-    elif FLAGS.model == 'maze-denoise':
-        model = MazeDenoise(
-            inp_dim = 5,
-            out_dim =2
-        )
     else:
         assert False
 
     kwargs = dict()
+    if FLAGS.baseline:
+        kwargs['baseline'] = True
+
+    if FLAGS.dataset in ['addition', 'inverse', 'lowrank']:
+        kwargs['continuous'] = True
 
     if FLAGS.dataset in ['sudoku', 'sudoku_latent', 'sudoku-rrn', 'sudoku-rrn-latent']:
         kwargs['sudoku'] = True
@@ -257,7 +212,8 @@ if __name__ == "__main__":
         save_and_sample_every = save_and_sample_every,
         evaluate_first = FLAGS.evaluate,  # run one evaluation first
         latent = FLAGS.latent,  # whether we are doing reasoning in the latent space
-        autoencode_model = autoencode_model
+        autoencode_model = autoencode_model,
+        exp_hash_code=hash_value
     )
 
     load_milestone = FLAGS.ckpt
@@ -271,14 +227,6 @@ if __name__ == "__main__":
         test_dataset = SudokuDataset(FLAGS.dataset, split='val')
         extra_validation_datasets = SudokuRRNDataset('sudoku-rrn', split='test')
         test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=FLAGS.batch_size, shuffle=False, num_workers=FLAGS.data_workers,pin_memory=True)
-        extra_validation_dataloaders = torch.utils.data.DataLoader(extra_validation_datasets, batch_size=FLAGS.batch_size, shuffle=False, num_workers=FLAGS.data_workers,pin_memory=True)
-    elif FLAGS.dataset == 'maze':
-        extra_validation_datasets = MazeData(
-                        dataset_name="Maze",
-                        dataset_path=FLAGS.test_data_path,
-                        mode = 'test',
-                        num_datapoints = num_test_datapoint
-                        )
         extra_validation_dataloaders = torch.utils.data.DataLoader(extra_validation_datasets, batch_size=FLAGS.batch_size, shuffle=False, num_workers=FLAGS.data_workers,pin_memory=True)
     else:
         assert 'not implemented'

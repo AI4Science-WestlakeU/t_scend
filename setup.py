@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
 setup(
-    name='X_src',
+    name='tscend_src',
     packages=find_packages(),
 )

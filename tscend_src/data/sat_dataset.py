@@ -3,8 +3,8 @@ import torch
 import pandas as pd
 import numpy as np
 from torch.utils.data.dataset import Dataset
-from X_src.utils.utils import set_seed
-from X_src.filepath import EXP_PATH,SRC_PATH
+from tscend_src.utils.utils import set_seed
+from tscend_src.filepath import EXP_PATH,SRC_PATH
 
 def get_data_dir(identifier):
     base_dir = EXP_PATH + '/dataset'

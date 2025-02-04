@@ -31,12 +31,12 @@ import yaml
 import numpy as np
 import pandas as pd
 from multiprocessing import Pool
-# from X_src.utils.utils_sudoku_discrete import MCTSDiscrete,NodeSudokuDiscrete,plot_energy_vs_distance, process_tensor_sudoku
-from X_src.utils.utils import set_seed
-from X_src.utils.utils_sudoku_continuous import MCTSContinuous,NodeSudokuContinuous
-from X_src.utils.utils_maze_continuous import NodeMazeContinuous
-from X_src.utils.utils import p, get_entropy
-from X_src.data.data_maze import MazeData,reconstruct_maze_solved,calculate_path_conformity,calculate_path_continuity,maze_accuracy,normalize_last_dim,plot_maze,maze_accuracy_batch
+# from tscend_src.utils.utils_sudoku_discrete import MCTSDiscrete,NodeSudokuDiscrete,plot_energy_vs_distance, process_tensor_sudoku
+from tscend_src.utils.utils import set_seed
+from tscend_src.utils.utils_sudoku_continuous import MCTSContinuous,NodeSudokuContinuous
+from tscend_src.utils.utils_maze_continuous import NodeMazeContinuous
+from tscend_src.utils.utils import p, get_entropy
+from tscend_src.data.data_maze import MazeData,reconstruct_maze_solved,calculate_path_conformity,calculate_path_continuity,maze_accuracy,normalize_last_dim,plot_maze,maze_accuracy_batch
 def _custom_exception_hook(type, value, tb):
     if hasattr(sys, 'ps1') or not sys.stderr.isatty():
         # we are in interactive mode or we don't have a tty-like

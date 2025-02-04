@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import random
 from einops import rearrange, reduce,repeat
-from X_src.utils.utils import set_seed,p
-# from X_src.model.ired.diffusion_lib.denoising_diffusion_pytorch_1d import sudoku_score
+from tscend_src.utils.utils import set_seed,p
+# from tscend_src.model.ired.diffusion_lib.denoising_diffusion_pytorch_1d import sudoku_score
 def sudoku_score(pred: torch.Tensor) -> bool:
     valid_mask = torch.ones_like(pred)
 

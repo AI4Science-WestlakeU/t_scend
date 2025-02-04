@@ -8,18 +8,18 @@ os.environ['OPENBLAS_NUM_THREADS'] = '1'
 os.environ['NUMEXPR_NUM_THREADS'] = '1'
 os.environ['MKL_NUM_THREADS'] = '1'
 
-from X_src.model.diffusion_lib.denoising_diffusion_pytorch_1d import GaussianDiffusion1D, Trainer1D
-from X_src.model.models import EBM, DiffusionWrapper
-from X_src.model.models import SudokuEBM, SudokuDenoise, AutoencodeModel, MazeDenoise, MazeEBM
-from X_src.data.sat_dataset import SATNetDataset, SudokuDataset, SudokuRRNDataset, SudokuRRNLatentDataset
+from tscend_src.model.diffusion_lib.denoising_diffusion_pytorch_1d import GaussianDiffusion1D, Trainer1D
+from tscend_src.model.models import EBM, DiffusionWrapper
+from tscend_src.model.models import SudokuEBM, SudokuDenoise, AutoencodeModel, MazeDenoise, MazeEBM
+from tscend_src.data.sat_dataset import SATNetDataset, SudokuDataset, SudokuRRNDataset, SudokuRRNLatentDataset
 import torch
 import hashlib
-from X_src.data.data_maze import MazeData,reconstruct_maze_solved,calculate_path_conformity,calculate_path_continuity,maze_accuracy,normalize_last_dim
+from tscend_src.data.data_maze import MazeData,reconstruct_maze_solved,calculate_path_conformity,calculate_path_continuity,maze_accuracy,normalize_last_dim
 
 import argparse
 
-from X_src.utils.utils import set_seed
-from X_src.filepath import EXP_PATH,SRC_PATH
+from tscend_src.utils.utils import set_seed
+from tscend_src.filepath import EXP_PATH,SRC_PATH
 
 try:
     import mkl

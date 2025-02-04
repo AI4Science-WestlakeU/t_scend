@@ -8,8 +8,8 @@ from tqdm.auto import tqdm
 from tabulate import tabulate
 from reasoning_dataset import random_generate_graph, random_generate_graph_dnc, random_generate_special_graph
 from torch.utils.data.dataset import Dataset
-from X_src.utils.utils import set_seed
-from X_src.filepath import EXP_PATH,SRC_PATH
+from tscend_src.utils.utils import set_seed
+from tscend_src.filepath import EXP_PATH,SRC_PATH
 
 
 class PlanningDataset(Dataset):
