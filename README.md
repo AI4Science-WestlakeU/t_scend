@@ -1,7 +1,7 @@
 # T-SCEND: Test-time Scalable MCTS-enhanced Diffusion Model
 Here is the official T-SCEND implementation. 
 
-[arXiv]()
+[arXiv](https://arxiv.org/abs/2502.01989)
 
 We introduce Test-time Scalable MCTS-enhanced Diffusion Model (T-SCEND), a novel framework that significantly improves diffusion model’s reasoning capabilities with better energy-based training and scaling up test-time computation.
 
