@@ -41,3 +41,15 @@ sh scripts/Maze_inference.sh
 ```bash
 sh scripts/Sudoku_inference.sh
 ```
+
+## Citation
+If you find our work and/or our code useful, please cite us via:
+
+```bibtex
+@article{zhang2025tscend,
+  title={T-SCEND: Test-time Scalable MCTS-enhanced Diffusion Model},
+  author={Zhang, Tao and Pan, Jia-Shu and Feng, Ruiqi and Wu, Tailin},
+  journal={arXiv preprint arXiv:2502.01989},
+  year={2025}
+}
+```
