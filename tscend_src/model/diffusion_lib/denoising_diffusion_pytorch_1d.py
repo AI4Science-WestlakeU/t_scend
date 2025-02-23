@@ -921,7 +921,7 @@ class GaussianDiffusion1D(nn.Module):
         self.std_list.append(std.cpu().numpy())
         reward_energy = -energy
         reward_energy = rearrange(reward_energy, '(k b) -> b k', b = batch_size_origin, k = K)
-        topk_energy = torch.sort(reward_energy, dim=1, descending=False)
+        topk_energy = torch.sort(reward_energy, dim=1, descending=True)
         topk_reward = torch.sort(reward, dim=1, descending=True)
         # if self.sampling_timesteps ==10 and img.shape[0]>1:
         if False:
@@ -2695,9 +2695,9 @@ class Trainer1D(object):
             np.save(results_path_inference +f'/{prefix}_mean_path_length_std_seed{seed}.npy',np.array(self.ema.ema_model.path_length_std_list))
             with open(results_path_inference +f'/{prefix}_result_seed{seed}.txt', 'a') as f:
                 f.write(f'#####################\n')
-                f.write(f'mean_std: {mean_std}\n')
-                f.write(f'mean_consistency: {mean_consistency}\n')
-                f.write(f'mean_path_length_std: {mean_path_length_std}\n')
+                # f.write(f'mean_std: {mean_std}\n')
+                # f.write(f'mean_consistency: {mean_consistency}\n')
+                # f.write(f'mean_path_length_std: {mean_path_length_std}\n')
                 f.write(f"mean accuracy of {self.model.args.num_batch} batches with batch_size {label.shape[0]} is {np.mean(accuracy_list)}\n")
                 metrics={}
                 for key in metrics_list[0].keys():
