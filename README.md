@@ -5,9 +5,9 @@ Here is the official implementation for **T-SCEND: Test-time Scalable MCTS-enhan
 
 We introduce Test-time Scalable MCTS-enhanced Diffusion Model (T-SCEND), a novel framework that significantly improves diffusion model’s reasoning capabilities with better energy-based training and scaling up test-time computation.
 
-**Visualizations of Maze samples and test-time scalability of T-SCEND on Maze:**
+**Trained with Maze tasks of up to 6x6, T-SCEND can generalize to solve much harder 15x15 Maze tasks, with larger test-time compute resulting in higher accuracy.:**
 <a href="https://github.com/AI4Science-WestlakeU/t_scend/tree/main/assets/maze_scalability.png">
-  <img src="https://raw.githubusercontent.com/AI4Science-WestlakeU/t_scend/main/assets/maze_scalability.png" align="center" width="500">
+  <img src="https://raw.githubusercontent.com/AI4Science-WestlakeU/t_scend/main/assets/maze_scalability.png" align="center" width="600">
 </a>
 
 **Framework of T-SCEND:**
