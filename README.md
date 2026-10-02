@@ -1,7 +1,12 @@
 # T-SCEND: Test-time Scalable MCTS-enhanced Diffusion Model
+
+**T-SCEND is updated to VFScale**. Please see the updated [ICLR 2026 paper](https://openreview.net/forum?id=8ta0xgtsJK_) and repo: [https://github.com/AI4Science-WestlakeU/VFScale](https://github.com/AI4Science-WestlakeU/VFScale)
+
 Here is the official implementation for **T-SCEND: Test-time Scalable MCTS-enhanced Diffusion Model**. 
 
 [[arXiv](https://arxiv.org/abs/2502.01989)]
+
+
 
 We introduce Test-time Scalable MCTS-enhanced Diffusion Model (T-SCEND), a novel framework that significantly improves diffusion model’s reasoning capabilities with better energy-based training and scaling up test-time computation.
 
